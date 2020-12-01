@@ -8,7 +8,7 @@ function Button(props){
         width: "100px",
         height: "30px", 
         border: "none",
-        borderRadius: "3px"
+        borderRadius: "3px",
     };
     return (<button style={styles} onClick={props.handleClick}>
         {props.text}

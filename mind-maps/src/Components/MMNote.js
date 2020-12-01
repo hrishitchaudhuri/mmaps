@@ -1,4 +1,5 @@
 import React from 'react';
+import Draggable from 'react-draggable';
 
 function getIntPx(s){
     let pInd = s.indexOf('p');
@@ -15,11 +16,12 @@ class MMNote extends React.Component{
                 borderStyle: "solid",
                 borderColor: "black",
                 borderWidth: "2px",
+                borderRadius: "5px",
                 width: "280px",
                 height: "150px",
                 left: props.x + "px",
                 top: props.y + "px",
-                transform: "translateY(0)"
+                transform: "translateY(0)",
             },
             items: [],
             diffX: 0,
@@ -44,20 +46,9 @@ class MMNote extends React.Component{
         console.log(e.clientX, e.clientY, rect.left, rect.top); // choose client X/Y
         console.log(e.screenX, e.screenY, rect.left, rect.top); */
 
-        /* setTimeout(()=>{
-            this.setState(prevState=>{
-                return {
-                    style:{
-                        ...prevState.style,
-                        transform: "translateY(0px)"
-                    }
-                }
-            });
-        }, 2000); */
-
         this.setState({
             diffX: e.clientX - rect.left,
-            diffY: e.clientY - rect.top,
+            diffY: e.clientY /* - rect.top */,
             dragging: true
         });
     }
@@ -99,8 +90,14 @@ class MMNote extends React.Component{
         e.preventDefault();
         const msg = this.inp_ref.value;
         this.setState(prevState => {
-            return {
-                items: [...prevState.items, <li key={prevState.items.length}>{msg}</li>]
+            if(msg != "")
+            {
+                return {
+                    items: [...prevState.items, <li key={prevState.items.length}>{"" + msg}</li>]
+                }
+            }
+            else{
+                return prevState;
             }
         });
         this.inp_ref.value = "";
@@ -129,12 +126,13 @@ class MMNote extends React.Component{
     }
 
     render(){
-        return (<div style={this.state.style} ref={r => {this.div_ref = r;}} >
-            <div id={this.props.id} 
-                style={{width: "260px", height:"20px", backgroundColor:"grey", position:"absolute", left:"10px", textAlign:"center"}} 
-                onMouseDown={this.handleMouseDown} 
+        return (<Draggable handle=".handle" bounds="parent">
+        <div style={this.state.style} ref={r => {this.div_ref = r;}} >
+            <div id={this.props.id} className="handle"
+                style={{width: "100%", height:"20px", backgroundColor:"grey", position:"absolute", textAlign:"center"}} 
+                /* onMouseDown={this.handleMouseDown} 
                 onMouseMove={this.handleMouseMove} 
-                onMouseUp={this.handleMouseUp}
+                onMouseUp={this.handleMouseUp} */
                 onMouseEnter={this.hideText}
                 onMouseLeave={this.showText}
             >
@@ -143,12 +141,13 @@ class MMNote extends React.Component{
             <br />
             <form style={{position:"absolute", top:"22px"}} onSubmit={this.handleSubmit}>
                 <input type="text" ref={r => {this.inp_ref = r;}}></input>
-                <button type="submit">Submit</button>
+                <button type="submit" className="submit-button">Add point</button>
             </form>
             <ul style={{position:"relative",width:"100px", top:"35px"}}>
                 {this.state.items}
             </ul>
-        </div>);
+        </div>
+        </Draggable>);
     }
 }
 
