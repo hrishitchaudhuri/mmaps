@@ -89,7 +89,7 @@ class MMNote extends React.Component{
         return (<Draggable handle=".handle" bounds="parent">
         <div style={this.state.style} ref={r => {this.div_ref = r;}} >
             <div id={this.props.id} className="handle"
-                style={{width: "100%", height:"20px", backgroundColor:"grey", position:"absolute", textAlign:"center"}} 
+                style={{width: "100%", height:"20px", backgroundColor:"rgb(280, 280, 60)", position:"absolute", textAlign:"center"}} 
                 onMouseEnter={this.hideText}
                 onMouseLeave={this.showText}
             >
