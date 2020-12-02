@@ -31,60 +31,20 @@ class MMNote extends React.Component{
         };
         
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleMouseDown = this.handleMouseDown.bind(this);
-        this.handleMouseUp = this.handleMouseUp.bind(this);
-        this.handleMouseMove = this.handleMouseMove.bind(this);
         this.hideText = this.hideText.bind(this);
         this.showText = this.showText.bind(this);
+        this.handleDrag = this.handleDrag.bind(this);
     }
 
-    handleMouseDown(e){
-        // console.log(e.target.parentElement.parentElement); //this is the area element
-        const rect = e.target.parentElement.getBoundingClientRect();
-        /* console.log(e.offsetX, e.offsetY, rect.left, rect.top);
-        console.log(e.pageX, e.pageY, rect.left, rect.top);
-        console.log(e.clientX, e.clientY, rect.left, rect.top); // choose client X/Y
-        console.log(e.screenX, e.screenY, rect.left, rect.top); */
-
+    handleDrag = (e, ui) => {
+        const {x, y} = this.state.deltaPosition;
         this.setState({
-            diffX: e.clientX - rect.left,
-            diffY: e.clientY /* - rect.top */,
-            dragging: true
+          deltaPosition: {
+            x: x + ui.deltaX,
+            y: y + ui.deltaY,
+          }
         });
-    }
-
-    handleMouseUp(e){
-        this.setState({
-            dragging: false
-        })
-    }
-
-    handleMouseMove(e){
-        if(this.state.dragging)
-        {
-            let left = e.clientX - this.state.diffX;
-            // let top = e.clientY - this.state.diffY;
-            let translate_top = parseInt(e.target.parentElement.getBoundingClientRect().top) 
-            - parseInt(e.target.parentElement.parentElement.getBoundingClientRect().top) 
-            + parseInt(e.clientY - e.target.parentElement.getBoundingClientRect().top) - 10;
-
-            // console.log(e.clientX - this.state.diffX, e.clientY - this.state.diffY);
-            /* this.setState({
-                diffX: e.clientX,
-                diffY: e.clientY,
-            }); */
-           
-            this.setState(prevState => {
-                return {
-                    style:{
-                        ...prevState.style,
-                        left:left+"px",
-                        transform: `translateY(${(translate_top > 0)? translate_top : 0}px)`
-                    }
-                }
-            });
-        }
-    }
+    };
     
     handleSubmit = function(e){
         e.preventDefault();
@@ -130,9 +90,6 @@ class MMNote extends React.Component{
         <div style={this.state.style} ref={r => {this.div_ref = r;}} >
             <div id={this.props.id} className="handle"
                 style={{width: "100%", height:"20px", backgroundColor:"grey", position:"absolute", textAlign:"center"}} 
-                /* onMouseDown={this.handleMouseDown} 
-                onMouseMove={this.handleMouseMove} 
-                onMouseUp={this.handleMouseUp} */
                 onMouseEnter={this.hideText}
                 onMouseLeave={this.showText}
             >
