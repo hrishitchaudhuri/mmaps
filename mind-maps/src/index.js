@@ -6,7 +6,7 @@ import MMNote from './Components/MMNote';
 
 class MindMapArea extends React.Component{
     render(){
-        return (<div id="area" style={{width:"1500px", height:"900px", borderWidth: "2px", borderStyle: "solid"}}>
+        return (<div id="area" style={{position:"relative", left:"15px", width:"1400px", height:"900px", borderWidth: "2px", borderStyle: "solid"}}>
             {this.props.elems}
         </div>);
     }
@@ -26,11 +26,18 @@ function MindMap(){
         
     }
 
+    function handleConnection(){
+        // handles making the lines (links) between notes.
+    }
+
     return (<div>
         <MindMapArea elems={notes}/>
         <br />
-        <Button color="green" text="Add Node" style="position:relative" handleClick={handleclick}/>
-        <Button color="green" text="Save" style="position:relative" handleClick={handleSubmit} />
+        <div style={{display:"flex", flexDirection:"row", height:"50px", alignItems:"center"}}>
+            <Button color="blue" finalcolor="rgb(40, 40, 255)" text="Add Node" handleClick={handleclick}/>
+            <Button color="green" finalcolor="rgb(0, 165, 0)" text="Save" handleClick={handleSubmit} />
+            <Button color="rgb(100, 0, 255)" finalcolor="rgb(120, 50, 255)" text="Add connection" height="40px" handleClick={handleConnection} />
+        </div>
     </div>);
 }
 

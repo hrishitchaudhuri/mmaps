@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 
 function Button(props){
+    const [ bgcolor, setBgColor ] = useState(props.color);
     const styles = {
         color: "white", 
-        backgroundColor: props.color, 
+        backgroundColor: bgcolor, 
         width: "100px",
-        height: "30px", 
+        height: (props.height)? props.height : "30px", 
         border: "none",
-        borderRadius: "3px"
+        borderRadius: "3px",
+        margin:"5px"
     };
-    return (<button style={styles} onClick={props.handleClick}>
+    return (<button className="button" style={styles} onClick={props.handleClick} onMouseEnter={()=>{setBgColor(props.finalcolor)}} onMouseLeave={()=>{setBgColor(props.color)}}>
         {props.text}
     </button>);
 }

@@ -1,9 +1,5 @@
 .button{
-    color: white;
-    width: 100px;
-    height: 30px; 
-    border: none;
-    border-radius: 3px;
+    transition: background-color ease-out 0.2s;
 }
 
 .submit-button{
@@ -19,4 +15,12 @@
 
 .submit-button:hover{
     background-color: rgb(50, 187, 255);
+}
+
+.note{
+    transition: box-shadow ease 0.2s;
+}
+
+.note:hover{
+    box-shadow: 0 0 2px 5px skyblue;
 }
