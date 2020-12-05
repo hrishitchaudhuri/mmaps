@@ -1,5 +1,7 @@
 import React from 'react';
+import axios from 'axios';
 import Draggable from 'react-draggable';
+import Button from './Button';
 
 function getIntPx(s){
     let pInd = s.indexOf('p');
@@ -24,6 +26,7 @@ class MMNote extends React.Component{
                 transform: "translateY(0)",
             },
             items: [],
+            messages:[],
             diffX: 0,
             diffY: 0,
             dragging: false,
@@ -34,6 +37,7 @@ class MMNote extends React.Component{
         this.hideText = this.hideText.bind(this);
         this.showText = this.showText.bind(this);
         this.handleDrag = this.handleDrag.bind(this);
+        this.handleSave = this.handleSave.bind(this);
     }
 
     handleDrag = (e, ui) => {
@@ -45,6 +49,24 @@ class MMNote extends React.Component{
           }
         });
     };
+
+    handleSave = function(e) {
+        e.preventDefault();
+        const NOTE_ID = this.props.id;
+        const ITEMS = this.state.messages;
+
+        const NOTE = {
+            NOTE_ID, 
+            ITEMS
+        };
+
+        axios
+            .post('http://localhost:8000/server', NOTE)
+            .then((res)=>console.log('[INFO] Notes posted to DB successfully.' + res.text()))
+            .catch(err => {
+                console.log("[ERR] " + err);
+            });
+    }
     
     handleSubmit = function(e){
         e.preventDefault();
@@ -53,7 +75,8 @@ class MMNote extends React.Component{
             if(msg != "")
             {
                 return {
-                    items: [...prevState.items, <li key={prevState.items.length}>{"" + msg}</li>]
+                    items: [...prevState.items, <li key={prevState.items.length}>{"" + msg}</li>],
+                    messages: [...prevState.messages, msg]
                 }
             }
             else{
@@ -103,6 +126,8 @@ class MMNote extends React.Component{
             <ul style={{position:"relative",width:"100px", top:"35px"}}>
                 {this.state.items}
             </ul>
+            <br/>
+            <Button style={{position:"relative"}} color="green" finalcolor="rgb(0, 165, 0)" text="Save" handleClick={this.handleSave} />
         </div>
         </Draggable>);
     }

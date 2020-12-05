@@ -22,10 +22,6 @@ function MindMap(){
         setKey(prevKey => prevKey + 1);
     }
 
-    function handleSubmit () {
-        
-    }
-
     function handleConnection(){
         // handles making the lines (links) between notes.
     }
@@ -35,7 +31,6 @@ function MindMap(){
         <br />
         <div style={{display:"flex", flexDirection:"row", height:"50px", alignItems:"center"}}>
             <Button color="blue" finalcolor="rgb(40, 40, 255)" text="Add Node" handleClick={handleclick}/>
-            <Button color="green" finalcolor="rgb(0, 165, 0)" text="Save" handleClick={handleSubmit} />
             <Button color="rgb(100, 0, 255)" finalcolor="rgb(120, 50, 255)" text="Add connection" height="40px" handleClick={handleConnection} />
         </div>
     </div>);
