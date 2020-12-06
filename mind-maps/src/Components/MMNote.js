@@ -26,7 +26,7 @@ class MMNote extends React.Component{
                 transform: "translateY(0)",
             },
             items: [],
-            messages:[],
+            messages: [],
             title: '',
             diffX: 0,
             diffY: 0,
@@ -39,6 +39,31 @@ class MMNote extends React.Component{
         this.showText = this.showText.bind(this);
         this.handleDrag = this.handleDrag.bind(this);
         this.handleSave = this.handleSave.bind(this);
+
+        var noteid = {
+            'NOTE_ID':this.props.id
+        };
+
+        var query = Object.keys(noteid).map(key => key + '=' + noteid[key]).join('&');
+        var req_url = 'http://localhost:8000/mapi/?' + query;
+
+        fetch(req_url)
+            .then(async res=> {
+                const data = await res.json();
+
+                console.log(data);
+                
+                var count = 0;
+                if (data && data.TITLE && data.ITEMS) {
+                    this.setState({
+                        items: data.ITEMS.map(element => <li key={count++}>{"" + element}</li>),
+                        messages: data.ITEMS,
+                        title: data.TITLE
+                    })
+                    console.log("[INFO] Set State Successful.");
+                }
+            })
+            .then(console.log("[INFO] Successfully Loaded Data."));
     }
 
     handleDrag = (e, ui) => {
@@ -59,7 +84,7 @@ class MMNote extends React.Component{
 
         const NOTE = {
             NOTE_ID, 
-            ITEMS,
+            ITEMS, 
             TITLE
         };
 
@@ -127,7 +152,7 @@ class MMNote extends React.Component{
             </div>
             <br />
             <form style={{position:"absolute", top:"22px"}} onSubmit={this.handleSubmit}>
-                <input type="text" placeholder="Title" style={{width:"100%"}} ref={r => {this.title_ref = r;}}></input>
+                <input type="text" placeholder="Title" defaultValue={this.state.title} style={{width:"100%"}} ref={r => {this.title_ref = r;}}></input>
                 <input type="text" ref={r => {this.inp_ref = r;}}></input>
                 <button type="submit" className="submit-button">Add point</button>
             </form>

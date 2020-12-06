@@ -6,27 +6,38 @@ var router = express.Router();
 var app = express();
 var MongoClient = require('mongodb').MongoClient;
 
-router.get('/', function(req, res, next){
-	MongoClient.connect('mongodb://localhost:27017',{
+router.get('/', function(req, res) {
+    res.writeHead(200, {'Content-type':'application/json'});
+    MongoClient.connect('mongodb://localhost:27017',{
 		useUnifiedTopology:true
     }, 
     
     function(err,client){
-        if(err) throw err;
+        if (err) throw err;
         
+        var req_url = url.parse(req.url);
+        var query_object = qs.parse(req_url.query);
+
+        let nodeid = {
+            NOTE_ID: parseInt(query_object.NOTE_ID)
+        }
+
+        console.log(nodeid);
+
 		const db = client.db('newdb'); 
-		db.collection('users').find({}).toArray(function(err,objs){
+		db.collection('users').findOne(nodeid, function(err,objs){
             if (err) throw err;
             
-            res.end(JSON.stringify(objs));
+            res.write(JSON.stringify(objs));
             console.log(objs);
+
+            res.end();
+            client.close();
         });
-	});
-    
-    next();
+    });
 });
 
-router.post('/', function(req, res, next){
+router.post('/', function(req, res){
     MongoClient.connect('mongodb://localhost:27017', {
         useUnifiedTopology:true
     }, 
@@ -34,18 +45,17 @@ router.post('/', function(req, res, next){
     function(err,client){
         if(err) throw err;
 
-        let title = {
-            TITLE: req.body.TITLE
+        let nodeid = {
+            NOTE_ID: req.body.NOTE_ID
         }
 
         const CLIENT_BASE = client.db('newdb'); 
-        CLIENT_BASE.collection('users').updateOne(title, { $set: req.body }, { upsert: true }, function(err){
+        CLIENT_BASE.collection('users').updateOne(nodeid, { $set: req.body }, { upsert: true }, function(err){
             if(err) throw err;
 
             console.log("[INFO] POST successful.");
         });
     });
-    next();
 })
 
 module.exports = router;
