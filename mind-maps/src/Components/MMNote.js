@@ -27,10 +27,11 @@ class MMNote extends React.Component{
             },
             items: [],
             messages:[],
+            title: '',
             diffX: 0,
             diffY: 0,
             dragging: false,
-            leeway:0,
+            leeway: 1
         };
         
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -54,14 +55,17 @@ class MMNote extends React.Component{
         e.preventDefault();
         const NOTE_ID = this.props.id;
         const ITEMS = this.state.messages;
+        const TITLE = this.state.title;
 
         const NOTE = {
             NOTE_ID, 
-            ITEMS
+            ITEMS,
+            TITLE
         };
 
+        console.log(NOTE);
         axios
-            .post('http://localhost:8000/server', NOTE)
+            .post('http://localhost:8000/mapi', NOTE)
             .then((res)=>console.log('[INFO] Notes posted to DB successfully.' + res.text()))
             .catch(err => {
                 console.log("[ERR] " + err);
@@ -71,12 +75,15 @@ class MMNote extends React.Component{
     handleSubmit = function(e){
         e.preventDefault();
         const msg = this.inp_ref.value;
+        const note_title = this.title_ref.value;
+
         this.setState(prevState => {
-            if(msg != "")
+            if(msg !== "")
             {
                 return {
                     items: [...prevState.items, <li key={prevState.items.length}>{"" + msg}</li>],
-                    messages: [...prevState.messages, msg]
+                    messages: [...prevState.messages, msg],
+                    title: note_title
                 }
             }
             else{
@@ -95,7 +102,7 @@ class MMNote extends React.Component{
     }
 
     componentDidUpdate(){
-        if(this.state.items.length >= 5+this.state.leeway){
+        if(this.state.items.length >= this.state.leeway){
             this.setState(prevState=>{
                 return {
                     style:{
@@ -120,18 +127,19 @@ class MMNote extends React.Component{
             </div>
             <br />
             <form style={{position:"absolute", top:"22px"}} onSubmit={this.handleSubmit}>
+                <input type="text" placeholder="Title" style={{width:"100%"}} ref={r => {this.title_ref = r;}}></input>
                 <input type="text" ref={r => {this.inp_ref = r;}}></input>
                 <button type="submit" className="submit-button">Add point</button>
             </form>
-            <ul style={{position:"relative",width:"100px", top:"35px"}}>
-                {this.state.items}
-            </ul>
             <br/>
-            <Button style={{position:"relative"}} color="green" finalcolor="rgb(0, 165, 0)" text="Save" handleClick={this.handleSave} />
+            <ul style={{position:"relative",width:"100%", top:"35px"}}>
+                {this.state.items} <br/>
+            </ul>
+            <br/><br/>
+            <Button style={{position:"relative", width:"100%", top:"100%"}} color="green" finalcolor="rgb(0, 165, 0)" text="Save" handleClick={this.handleSave} />
         </div>
         </Draggable>);
     }
 }
 
 export default MMNote;
-
