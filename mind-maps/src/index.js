@@ -22,8 +22,35 @@ function MindMap(){
         setKey(prevKey => prevKey + 1);
     }
 
-    function handleConnection(){
-        // handles making the lines (links) between notes.
+    function handleSearch() {
+        var result = prompt("Enter Title:");
+
+        var title = {
+            'TITLE':result
+        };
+
+        var query = Object.keys(title).map(key => key + '=' + title[key]).join('&');
+        var req_url = 'http://localhost:8000/mapi/search/?' + query;
+
+        fetch(req_url)
+            .then(async res=> {
+                const data = await res.json();
+                
+                if (data.length > 0) {
+                    var res_string = 'YOUR SEARCH RETURNED : \n'
+                    for (let i=0; i < data.length; i++) {
+                        for (let j=0; j < data[i].ITEMS.length; j++) {
+                            res_string += '\t' + data[i].ITEMS[j] + '\n';
+                        }
+                    }
+                    alert(res_string);
+                }
+
+                else {
+                    alert("No matches found.");
+                }
+            })
+            .then(console.log("[INFO] Successfully Loaded Data."));
     }
 
     return (<div>
@@ -31,7 +58,7 @@ function MindMap(){
         <br />
         <div style={{display:"flex", flexDirection:"row", height:"50px", alignItems:"center"}}>
             <Button color="blue" finalcolor="rgb(40, 40, 255)" text="Add Node" handleClick={handleclick}/>
-            <Button color="rgb(100, 0, 255)" finalcolor="rgb(120, 50, 255)" text="Add connection" height="40px" handleClick={handleConnection} />
+            <Button color="rgb(100, 0, 255)" finalcolor="rgb(120, 50, 255)" text="Search Titles" handleClick={handleSearch} />
         </div>
     </div>);
 }
