@@ -39,6 +39,7 @@ class MMNote extends React.Component{
         this.showText = this.showText.bind(this);
         this.handleDrag = this.handleDrag.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handleClear = this.handleClear.bind(this);
 
         var noteid = {
             'NOTE_ID':this.props.id
@@ -97,6 +98,37 @@ class MMNote extends React.Component{
             });
     }
     
+    handleClear = function(e) {
+        e.preventDefault();
+        const NOTE_ID = this.props.id;
+
+        const NOTE_del = {
+            NOTE_ID
+        };
+
+        this.title_ref.value = '';
+
+        this.setState(prevState => {
+            return {
+                items: [],
+                messages: [],
+                title: '',
+                style: {
+                    ...prevState.style,
+                    height: "150px"
+                }, 
+                leeway: 1
+            }
+        });
+
+        axios
+            .post('http://localhost:8000/mapi/delete', NOTE_del)
+            .then((res)=>console.log('[INFO] Note cleared successfully.' + res.text()))
+            .catch(err => {
+                console.log('[ERR] ' + err);
+            });
+    }
+
     handleSubmit = function(e){
         e.preventDefault();
         const msg = this.inp_ref.value;
@@ -162,6 +194,7 @@ class MMNote extends React.Component{
             </ul>
             <br/><br/>
             <Button style={{position:"relative", width:"100%", top:"100%"}} color="green" finalcolor="rgb(0, 165, 0)" text="Save" handleClick={this.handleSave} />
+            <Button style={{position:"relative", width:"100%", top:"100%"}} color="green" finalcolor="rgb(0, 165, 0)" text="Clear" handleClick={this.handleClear} />
         </div>
         </Draggable>);
     }
