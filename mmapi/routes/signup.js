@@ -83,35 +83,49 @@ router.post('/', function(req, res){
   function(err,client){
       if(err) throw err;
 
+      const db = client.db('newdb');
+
       var name = req.body.name; 
       var email =req.body.email; 
     
-      var data = { 
-          "name": name, 
-          "email":email, 
-      } 
+      var em = {
+          "email" : email
+      };
 
-      var mailOptions = {
-        from: 'mindmaps94@gmail.com',
-        to: email,
-        subject: 'Hello!',
-        text: 'Hello, Welcome to Mind Maps!'
-    };
+      db.collection('signup').findOne(email, function(err,objs){
+        if (objs) {
+            var data = { 
+                "name": name, 
+                "email":email, 
+            } 
+
+            var mailOptions = {
+                from: 'mindmaps94@gmail.com',
+                to: email,
+                subject: 'Hello!',
+                text: 'Hello, Welcome to Mind Maps!'
+            };
     
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+ 
+            db.collection('signup').insertOne(data,function(err, collection){ 
+                if(err) throw err;
+
+                console.log("[INFO] POST successful.");
+                client.close();
+            });
         }
-    });
 
-      const db = client.db('newdb'); 
-      db.collection('signup').insertOne(data,function(err, collection){ 
-          if(err) throw err;
-
-          console.log("[INFO] POST successful.");
-          client.close();
+        else {
+            console.log("[INFO] User already exists.")
+            client.close();
+        }
       });
   });
 });
