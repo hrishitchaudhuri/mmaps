@@ -6,7 +6,7 @@ import MMNote from './Components/MMNote';
 
 class MindMapArea extends React.Component{
     render(){
-        return (<div id="area" style={{position:"relative", left:"15px", width:"1400px", height:"900px", borderWidth: "2px", borderStyle: "solid"}}>
+        return (<div id="area" style={{position:"relative", left:"15px", width:"95vw", height:"900px", borderWidth: "2px", borderStyle: "solid", margin: "auto"}}>
             {this.props.elems}
         </div>);
     }
