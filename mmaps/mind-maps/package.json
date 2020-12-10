@@ -11,9 +11,11 @@
     "react-dom": "^17.0.1",
     "react-draggable": "^4.4.3",
     "react-scripts": "4.0.0",
+    "source-map-explorer": "^2.5.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
