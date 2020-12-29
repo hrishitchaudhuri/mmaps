@@ -6,6 +6,27 @@ var router = express.Router();
 var app = express();
 var MongoClient = require('mongodb').MongoClient;
 
+router.get('/all', function(req, res) {
+    res.writeHead(200, { 'Content-type': 'application/json' });
+    MongoClient.connect('mongodb://localhost:27017', {
+        useUnifiedTopology: true
+    }, 
+    
+    function(err, client) {
+        if (err) throw err;
+
+        const db = client.db('newdb');
+        db.collection('users').find({}).toArray(function(err, objs) {
+            if (err) throw err;
+
+            res.write(JSON.stringify(objs));
+            res.end();
+
+            client.close();
+        })
+    })
+})
+
 router.get('/search', function(req, res) {
     res.writeHead(200, {'Content-type':'application/json'});
     MongoClient.connect('mongodb://localhost:27017', {
