@@ -106,6 +106,28 @@ router.get('/', function(req, res) {
     });
 });
 
+router.put('/affix', function(req, res) {
+    MongoClient.connect('mongodb://localhost:27017', {
+        useUnifiedTopology: true
+    }, 
+    
+    function(err, client) {
+        if (err) throw err;
+
+        let noteid = {
+            NOTE_ID: req.body.NOTE_ID
+        };
+
+        const CLIENT_BASE = client.db('newdb');
+        CLIENT_BASE.collection('users').updateOne(noteid, { $set: req.body }, { upsert: true }, function(err) {
+            if (err) throw err;
+
+            res.end();
+            client.close();
+        })
+    })
+})
+
 router.post('/delete', function(req, res) {
     MongoClient.connect('mongodb://localhost:27017', {
         useUnifiedTopology:true
@@ -130,7 +152,8 @@ router.post('/delete', function(req, res) {
     })
 })
 
-router.post('/', function(req, res){
+router.post('/', function(req, res) {
+    res.writeHead(200, { 'Content-type' : 'application/json' });
     MongoClient.connect('mongodb://localhost:27017', {
         useUnifiedTopology:true
     }, 
@@ -147,6 +170,8 @@ router.post('/', function(req, res){
             if(err) throw err;
 
             console.log("[INFO] POST successful.");
+            
+            res.end();
             client.close();
         });
     });
